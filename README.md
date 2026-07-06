@@ -16,7 +16,7 @@ See [`docs/adr/`](docs/adr/) for architecture decisions and [`src/ha/contracts.m
 
 ## Install (HACS)
 
-1. HACS → Frontend → ⋮ → Custom repositories → add this repo, category "Lovelace".
+1. HACS → Frontend → ⋮ → Custom repositories → add `https://github.com/ankorinek/automation-atlas`, category "Lovelace".
 2. Install "Automation Atlas".
 3. Add to `configuration.yaml`:
 
