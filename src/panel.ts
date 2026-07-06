@@ -42,7 +42,7 @@ export class AutomationAtlasPanel extends LitElement {
       padding: 16px;
       color: var(--primary-text-color);
       background: var(--primary-background-color);
-      min-height: 100vh;
+      min-height: 100%;
       box-sizing: border-box;
       max-width: 1100px;
       margin: 0 auto;
@@ -50,10 +50,11 @@ export class AutomationAtlasPanel extends LitElement {
     .topbar {
       display: flex;
       align-items: center;
-      justify-content: space-between;
+      gap: 8px;
       margin-bottom: 12px;
     }
     h1 {
+      flex: 1;
       font-size: 1.4em;
       margin: 0;
     }
@@ -234,6 +235,7 @@ export class AutomationAtlasPanel extends LitElement {
   protected render() {
     return html`
       <div class="topbar">
+        <ha-menu-button .hass=${this.hass} .narrow=${this.narrow}></ha-menu-button>
         <h1>Automation Atlas</h1>
         <button class="refresh" @click=${() => this.loadAtlas()}>Refresh</button>
       </div>

@@ -45,7 +45,7 @@ const Pe = (t) => new ve(typeof t == "string" ? t : t + "", void 0, Wt), rt = (t
  * Copyright 2017 Google LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-const { is: Le, defineProperty: je, getOwnPropertyDescriptor: Me, getOwnPropertyNames: ze, getOwnPropertySymbols: Ue, getPrototypeOf: De } = Object, D = globalThis, Kt = D.trustedTypes, He = Kt ? Kt.emptyScript : "", Tt = D.reactiveElementPolyfillSupport, ct = (t, e) => t, At = { toAttribute(t, e) {
+const { is: Le, defineProperty: Me, getOwnPropertyDescriptor: je, getOwnPropertyNames: ze, getOwnPropertySymbols: Ue, getPrototypeOf: De } = Object, D = globalThis, Kt = D.trustedTypes, He = Kt ? Kt.emptyScript : "", Tt = D.reactiveElementPolyfillSupport, ct = (t, e) => t, At = { toAttribute(t, e) {
   switch (e) {
     case Boolean:
       t = t ? He : null;
@@ -85,11 +85,11 @@ let tt = class extends HTMLElement {
   static createProperty(e, i = Zt) {
     if (i.state && (i.attribute = !1), this._$Ei(), this.prototype.hasOwnProperty(e) && ((i = Object.create(i)).wrapped = !0), this.elementProperties.set(e, i), !i.noAccessor) {
       const n = Symbol(), r = this.getPropertyDescriptor(e, n, i);
-      r !== void 0 && je(this.prototype, e, r);
+      r !== void 0 && Me(this.prototype, e, r);
     }
   }
   static getPropertyDescriptor(e, i, n) {
-    const { get: r, set: o } = Me(this.prototype, e) ?? { get() {
+    const { get: r, set: o } = je(this.prototype, e) ?? { get() {
       return this[i];
     }, set(s) {
       this[i] = s;
@@ -1030,7 +1030,7 @@ function ui(t) {
       ...o.length ? { labelId: o } : {}
     };
 }
-function j(t, e, i) {
+function M(t, e, i) {
   if (!A(t))
     return i.push(`Unrecognized action at ${e}`), { kind: "unknown", path: e, raw: t };
   if (Array.isArray(t.choose)) {
@@ -1039,25 +1039,25 @@ function j(t, e, i) {
       return {
         conditions: $(a.conditions).map((c) => N(c, i, `${e}/choose/${l}`)),
         sequence: $(a.sequence).map(
-          (c, d) => j(c, `${e}/choose/${l}/sequence/${d}`, i)
+          (c, d) => M(c, `${e}/choose/${l}/sequence/${d}`, i)
         )
       };
-    }), o = t.default ? $(t.default).map((s, l) => j(s, `${e}/choose/default/${l}`, i)) : void 0;
+    }), o = t.default ? $(t.default).map((s, l) => M(s, `${e}/choose/default/${l}`, i)) : void 0;
     return { kind: "choose", path: e, branches: r, default: o };
   }
   if (Array.isArray(t.if)) {
-    const r = t.if.map((l) => N(l, i, `${e}/if`)), o = $(t.then).map((l, a) => j(l, `${e}/then/${a}`, i)), s = t.else ? $(t.else).map((l, a) => j(l, `${e}/else/${a}`, i)) : void 0;
+    const r = t.if.map((l) => N(l, i, `${e}/if`)), o = $(t.then).map((l, a) => M(l, `${e}/then/${a}`, i)), s = t.else ? $(t.else).map((l, a) => M(l, `${e}/else/${a}`, i)) : void 0;
     return { kind: "if", path: e, conditions: r, then: o, else: s };
   }
   if (Array.isArray(t.parallel)) {
     const r = t.parallel.map((o, s) => A(o) && Array.isArray(o.sequence) ? o.sequence.map(
-      (l, a) => j(l, `${e}/parallel/${s}/${a}`, i)
-    ) : [j(o, `${e}/parallel/${s}/0`, i)]);
+      (l, a) => M(l, `${e}/parallel/${s}/${a}`, i)
+    ) : [M(o, `${e}/parallel/${s}/0`, i)]);
     return { kind: "parallel", path: e, branches: r };
   }
   if (A(t.repeat)) {
     const r = t.repeat, o = $(r.sequence).map(
-      (s, l) => j(s, `${e}/repeat/sequence/${l}`, i)
+      (s, l) => M(s, `${e}/repeat/sequence/${l}`, i)
     );
     return r.count !== void 0 ? { kind: "repeat", path: e, mode: "count", count: Number(r.count), sequence: o } : r.while !== void 0 ? {
       kind: "repeat",
@@ -1176,7 +1176,7 @@ function hi(t) {
       blueprintInputs: A(d.input) ? d.input : void 0
     };
   }
-  const n = $(i.triggers ?? i.trigger), r = $(i.conditions ?? i.condition), o = $(i.actions ?? i.action), s = n.map((d, u) => Ae(d, `trigger/${u}`, e)), l = r.map((d) => N(d, e, "condition")), a = o.map((d, u) => j(d, `action/${u}`, e)), c = {
+  const n = $(i.triggers ?? i.trigger), r = $(i.conditions ?? i.condition), o = $(i.actions ?? i.action), s = n.map((d, u) => Ae(d, `trigger/${u}`, e)), l = r.map((d) => N(d, e, "condition")), a = o.map((d, u) => M(d, `action/${u}`, e)), c = {
     id: i.id ?? t.entityId,
     entityId: t.entityId,
     alias: i.alias ?? t.entityId,
@@ -1578,7 +1578,7 @@ function y(t, e, i = []) {
     i.length ? x(i, e, "and") : `label(s) ${t.labelId.join(", ")}`
   ), n.join(", ") || "(no target)";
 }
-const ji = {
+const Mi = {
   "switch.turn_on": (t, e, i, n) => `turn on ${y(t, i, n)}`,
   "switch.turn_off": (t, e, i, n) => `turn off ${y(t, i, n)}`,
   "switch.toggle": (t, e, i, n) => `toggle ${y(t, i, n)}`,
@@ -1611,15 +1611,15 @@ const ji = {
   "automation.turn_on": (t, e, i, n) => `enable ${y(t, i, n)}`,
   "automation.turn_off": (t, e, i, n) => `disable ${y(t, i, n)}`
 };
-function Mi(t, e, i) {
+function ji(t, e, i) {
   const n = t.startsWith("notify.mobile_app_") ? Ut(t.replace("notify.mobile_app_", "")) : t.startsWith("notify.") ? Ut(t.replace("notify.", "")) : "a notify target";
   if (!(e != null && e.title) && !(e != null && e.message)) return `send a phone notification to ${n}`;
   const r = typeof (e == null ? void 0 : e.title) == "string" ? ft(e.title, i) : void 0, o = typeof (e == null ? void 0 : e.message) == "string" ? ft(e.message, i) : void 0, s = [r, o].filter(Boolean);
   return `send a phone notification to ${n}: ${s.join(" — ")}`;
 }
 function zi(t, e, i, n, r = []) {
-  if (t.startsWith("notify.")) return Mi(t, i, n);
-  const o = ji[t];
+  if (t.startsWith("notify.")) return ji(t, i, n);
+  const o = Mi[t];
   return o ? o(e, i, n, r) : `call \`${t}\` on ${y(e, n, r)}`;
 }
 const Ui = /* @__PURE__ */ new Map();
@@ -1636,7 +1636,7 @@ const Di = {
 function Hi(t, e) {
   return Di[`${t}.${e}`] ?? e.replace(/_/g, " ");
 }
-function M(t, e, i, n = Ui) {
+function j(t, e, i, n = Ui) {
   var r, o;
   switch (t.kind) {
     case "service": {
@@ -1653,26 +1653,26 @@ function M(t, e, i, n = Ui) {
       if (t.branches.forEach((l, a) => {
         const c = a === 0 ? "If" : "Otherwise, if";
         s.push({ indent: i + 1, text: `${c} ${C(l.conditions, e)}:` });
-        for (const d of l.sequence) s.push(...M(d, e, i + 2, n));
+        for (const d of l.sequence) s.push(...j(d, e, i + 2, n));
       }), (r = t.default) != null && r.length) {
         s.push({ indent: i + 1, text: "Otherwise:" });
-        for (const l of t.default) s.push(...M(l, e, i + 2, n));
+        for (const l of t.default) s.push(...j(l, e, i + 2, n));
       }
       return s;
     }
     case "if": {
       const s = [{ indent: i, text: `If ${C(t.conditions, e)}:` }];
-      for (const l of t.then) s.push(...M(l, e, i + 1, n));
+      for (const l of t.then) s.push(...j(l, e, i + 1, n));
       if ((o = t.else) != null && o.length) {
         s.push({ indent: i, text: "Otherwise:" });
-        for (const l of t.else) s.push(...M(l, e, i + 1, n));
+        for (const l of t.else) s.push(...j(l, e, i + 1, n));
       }
       return s;
     }
     case "parallel": {
       const s = [{ indent: i, text: "Then, all at the same time:" }];
       return t.branches.forEach((l) => {
-        for (const a of l) s.push(...M(a, e, i + 1, n));
+        for (const a of l) s.push(...j(a, e, i + 1, n));
       }), s;
     }
     case "repeat": {
@@ -1692,7 +1692,7 @@ function M(t, e, i, n = Ui) {
           break;
       }
       const l = [{ indent: i, text: s }];
-      for (const a of t.sequence) l.push(...M(a, e, i + 1, n));
+      for (const a of t.sequence) l.push(...j(a, e, i + 1, n));
       return l;
     }
     case "wait_template":
@@ -1809,7 +1809,7 @@ function Vi(t, e = P) {
   return {
     triggerLines: t.triggers.map((n) => Se(n, e)),
     conditionLine: t.conditions.length ? `But only if: ${C(t.conditions, e)}` : void 0,
-    actionLines: t.actions.flatMap((n) => M(n, e, 0, i)),
+    actionLines: t.actions.flatMap((n) => j(n, e, 0, i)),
     modeNote: Bi[t.mode]
   };
 }
@@ -2220,7 +2220,7 @@ function Zi(t, e, i, n, r, o) {
       return [];
     }
     default: {
-      const a = t.path, [c] = M(t, r, 0);
+      const a = t.path, [c] = j(t, r, 0);
       n.push({ id: a, kind: "action", lines: U((c == null ? void 0 : c.text) ?? t.kind), source: t });
       for (const d of e) o(d, a, i);
       return [a];
@@ -2373,10 +2373,10 @@ function wn(t, e) {
 function xn(t, e) {
   return t.source.startsWith("trigger/") || t.source === "start" ? t.source === e.firedTriggerId : e.executedPaths.has(t.target);
 }
-const jt = 13;
+const Mt = 13;
 function Ce(t, e, i = "var(--card-background-color, #fff)", n = "var(--primary-text-color, #333)") {
   if (!t) return "";
-  const r = t.y + jt * 0.8 + (t.height - t.lines.length * jt) / 2;
+  const r = t.y + Mt * 0.8 + (t.height - t.lines.length * Mt) / 2;
   return w`
     <g>
       <rect
@@ -2393,7 +2393,7 @@ function Ce(t, e, i = "var(--card-background-color, #fff)", n = "var(--primary-t
       ${t.lines.map(
     (o, s) => w`<text
             x=${t.x + t.width / 2}
-            y=${r + s * jt}
+            y=${r + s * Mt}
             text-anchor="middle"
             font-family="sans-serif"
             font-size="10px"
@@ -2665,7 +2665,7 @@ const In = /* @__PURE__ */ new Set(["trigger", "condition-read", "action-read", 
 function ge(t) {
   return t.startsWith("automation.") ? "automation" : "entity";
 }
-function Mt(t, e, i, n, r) {
+function jt(t, e, i, n, r) {
   const o = In.has(n), s = o ? i : e, l = o ? e : i, a = `${s}->${l}`, c = t.get(a);
   c ? (c.roles.add(n), c.heuristic = c.heuristic || r) : t.set(a, { source: s, target: l, roles: /* @__PURE__ */ new Set([n]), heuristic: r });
 }
@@ -2673,14 +2673,14 @@ function En(t, e, i = P) {
   const n = e.automations.find((a) => a.entityId === t), r = /* @__PURE__ */ new Map();
   if (n) {
     for (const c of n.refs)
-      Mt(r, t, c.entityId, c.role, c.heuristic ?? !1);
+      jt(r, t, c.entityId, c.role, c.heuristic ?? !1);
     const a = e.index.byEntity.get(t) ?? [];
     for (const c of a)
-      c.automationId !== t && Mt(r, c.automationId, t, c.role, !1);
+      c.automationId !== t && jt(r, c.automationId, t, c.role, !1);
   } else {
     const a = e.index.byEntity.get(t) ?? [];
     for (const c of a)
-      Mt(r, c.automationId, t, c.role, !1);
+      jt(r, c.automationId, t, c.role, !1);
   }
   const o = /* @__PURE__ */ new Set();
   for (const { source: a, target: c } of r.values())
@@ -2995,10 +2995,10 @@ window.customCards.push({
   name: "Automation Atlas",
   description: "Plain-language view of your automations."
 });
-var jn = Object.defineProperty, Mn = Object.getOwnPropertyDescriptor, T = (t, e, i, n) => {
-  for (var r = n > 1 ? void 0 : n ? Mn(e, i) : e, o = t.length - 1, s; o >= 0; o--)
+var Mn = Object.defineProperty, jn = Object.getOwnPropertyDescriptor, T = (t, e, i, n) => {
+  for (var r = n > 1 ? void 0 : n ? jn(e, i) : e, o = t.length - 1, s; o >= 0; o--)
     (s = t[o]) && (r = (n ? s(e, i, r) : s(r)) || r);
-  return n && r && jn(e, i, r), r;
+  return n && r && Mn(e, i, r), r;
 };
 let I = class extends E {
   constructor() {
@@ -3097,6 +3097,7 @@ let I = class extends E {
   render() {
     return p`
       <div class="topbar">
+        <ha-menu-button .hass=${this.hass} .narrow=${this.narrow}></ha-menu-button>
         <h1>Automation Atlas</h1>
         <button class="refresh" @click=${() => this.loadAtlas()}>Refresh</button>
       </div>
@@ -3115,7 +3116,7 @@ I.styles = rt`
       padding: 16px;
       color: var(--primary-text-color);
       background: var(--primary-background-color);
-      min-height: 100vh;
+      min-height: 100%;
       box-sizing: border-box;
       max-width: 1100px;
       margin: 0 auto;
@@ -3123,10 +3124,11 @@ I.styles = rt`
     .topbar {
       display: flex;
       align-items: center;
-      justify-content: space-between;
+      gap: 8px;
       margin-bottom: 12px;
     }
     h1 {
+      flex: 1;
       font-size: 1.4em;
       margin: 0;
     }
