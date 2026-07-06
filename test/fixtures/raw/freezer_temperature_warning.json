@@ -1,0 +1,63 @@
+{
+  "id": "1783109819956",
+  "alias": "Freezer temperature warning",
+  "description": "Sends notifications to both phones when a freezer is too warm. Downstairs (stable dedicated freezer): warns above -12C for 15 min, critical above -6C for 5 min. Upstairs (fridge/freezer combo with adaptive auto-defrost): warns above -10C for 60 min, critical above -6C for 40 min. Resolves with a clear notification when both freezers return below -15C, gated by input_boolean.freezer_alert_active so normal cycling doesn't re-send all-clear notifications.",
+  "triggers": [
+    { "trigger": "numeric_state", "entity_id": "sensor.downstairs_freezer_temperature", "above": -12, "for": { "minutes": 15 }, "id": "downstairs_warning" },
+    { "trigger": "numeric_state", "entity_id": "sensor.upstairs_freezer_temperature", "above": -10, "for": { "minutes": 60 }, "id": "upstairs_warning" },
+    { "trigger": "numeric_state", "entity_id": "sensor.downstairs_freezer_temperature", "above": -6, "for": { "minutes": 5 }, "id": "downstairs_critical" },
+    { "trigger": "numeric_state", "entity_id": "sensor.upstairs_freezer_temperature", "above": -6, "for": { "minutes": 40 }, "id": "upstairs_critical" },
+    { "trigger": "numeric_state", "entity_id": "sensor.downstairs_freezer_temperature", "below": -15, "id": "downstairs_ok" },
+    { "trigger": "numeric_state", "entity_id": "sensor.upstairs_freezer_temperature", "below": -15, "id": "upstairs_ok" }
+  ],
+  "conditions": [],
+  "actions": [
+    {
+      "choose": [
+        {
+          "conditions": [{ "condition": "trigger", "id": ["downstairs_critical", "upstairs_critical"] }],
+          "sequence": [
+            { "action": "notify.mobile_app_resident_one", "data": { "title": "🚨 FREEZER CRITICAL", "message": "{{ '🔴 Downstairs freezer: ' + states('sensor.downstairs_freezer_temperature') + '°C' if trigger.id == 'downstairs_critical' else '🔴 Upstairs freezer: ' + states('sensor.upstairs_freezer_temperature') + '°C' }} — food may be at risk!", "data": { "push": { "sound": "default" }, "tag": "freezer_alert" } } },
+            { "action": "notify.mobile_app_resident_two", "data": { "title": "🚨 FREEZER CRITICAL", "message": "template as above", "data": { "push": { "sound": "default" }, "tag": "freezer_alert" } } },
+            { "action": "input_boolean.turn_on", "target": { "entity_id": "input_boolean.freezer_alert_active" } }
+          ]
+        },
+        {
+          "conditions": [{ "condition": "trigger", "id": ["downstairs_warning", "upstairs_warning"] }],
+          "sequence": [
+            { "action": "notify.mobile_app_resident_one", "data": { "title": "⚠️ Freezer Temperature High", "message": "template", "data": { "tag": "freezer_alert" } } },
+            { "action": "notify.mobile_app_resident_two", "data": { "title": "⚠️ Freezer Temperature High", "message": "template", "data": { "tag": "freezer_alert" } } },
+            { "action": "input_boolean.turn_on", "target": { "entity_id": "input_boolean.freezer_alert_active" } }
+          ]
+        },
+        {
+          "conditions": [
+            { "condition": "trigger", "id": ["downstairs_ok", "upstairs_ok"] },
+            { "condition": "numeric_state", "entity_id": "sensor.downstairs_freezer_temperature", "below": -15 },
+            { "condition": "numeric_state", "entity_id": "sensor.upstairs_freezer_temperature", "below": -15 },
+            { "condition": "state", "entity_id": "input_boolean.freezer_alert_active", "state": "on" }
+          ],
+          "sequence": [
+            { "action": "notify.mobile_app_resident_one", "data": { "title": "✅ Freezers back to normal", "message": "template", "data": { "tag": "freezer_alert" } } },
+            { "action": "notify.mobile_app_resident_two", "data": { "title": "✅ Freezers back to normal", "message": "template", "data": { "tag": "freezer_alert" } } },
+            { "action": "input_boolean.turn_off", "target": { "entity_id": "input_boolean.freezer_alert_active" } }
+          ]
+        }
+      ]
+    }
+  ],
+  "mode": "restart",
+  "max_exceeded": "silent",
+  "_trace_fixture": {
+    "run_id": "dad3fe0aa1f817b82c17f684fbbc1c97",
+    "trigger": { "platform": "numeric_state", "entity_id": "sensor.upstairs_freezer_temperature", "from_state": "-14.6", "to_state": "-16.6" },
+    "action_trace_paths": [
+      "action/0/choose/0", "action/0/choose/0/conditions/0",
+      "action/0/choose/1", "action/0/choose/1/conditions/0",
+      "action/0/choose/2", "action/0/choose/2/conditions/0", "action/0/choose/2/conditions/1", "action/0/choose/2/conditions/1/entity_id/0",
+      "action/0/choose/2/conditions/2", "action/0/choose/2/conditions/2/entity_id/0",
+      "action/0/choose/2/conditions/3", "action/0/choose/2/conditions/3/entity_id/0"
+    ],
+    "note": "Confirms IR path convention: action/<idx>/choose/<branchIdx>/conditions/<condIdx>/entity_id/<subIdx> mirrors raw config nesting exactly."
+  }
+}

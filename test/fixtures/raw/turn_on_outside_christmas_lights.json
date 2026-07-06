@@ -1,0 +1,15 @@
+{
+  "id": "1764429081012",
+  "alias": "Turn on outside Christmas lights",
+  "description": "",
+  "triggers": [
+    { "trigger": "time", "at": "16:00:00", "weekday": ["sun", "mon", "tue", "wed", "thu", "fri", "sat"] }
+  ],
+  "conditions": [],
+  "actions": [
+    { "type": "turn_on", "device_id": "5ba0c6abbc722f683700394329576112", "entity_id": "d4f33cef7c800d7711188d44cf9122a8", "domain": "switch" },
+    { "type": "turn_on", "device_id": "5ba0c6abbc722f683700394329576112", "entity_id": "2e2937429f53894ec36f8ba22559fe06", "domain": "switch" },
+    { "type": "turn_on", "device_id": "5ba0c6abbc722f683700394329576112", "entity_id": "4a278aa8b0bec387a5425fbab29ff7e6", "domain": "switch" }
+  ],
+  "mode": "single"
+}

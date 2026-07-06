@@ -1,0 +1,36 @@
+{
+  "id": "1783109908701",
+  "alias": "Water leak detected — alert both phones",
+  "description": "Fires immediately when either the dishwasher or furnace room water leak sensor detects water. Sends an urgent notification to both phones identifying which sensor triggered. Sends a clear notification when the sensor goes dry again.",
+  "triggers": [
+    { "trigger": "state", "entity_id": "binary_sensor.klippbok_water_leak_sensor_water_leak", "to": "on", "id": "dishwasher_wet" },
+    { "trigger": "state", "entity_id": "binary_sensor.klippbok_water_leak_sensor_water_leak_2", "to": "on", "id": "furnace_wet" },
+    { "trigger": "state", "entity_id": "binary_sensor.klippbok_water_leak_sensor_water_leak", "to": "off", "from": "on", "id": "dishwasher_dry" },
+    { "trigger": "state", "entity_id": "binary_sensor.klippbok_water_leak_sensor_water_leak_2", "to": "off", "from": "on", "id": "furnace_dry" }
+  ],
+  "conditions": [],
+  "actions": [
+    {
+      "choose": [
+        { "conditions": [{ "condition": "trigger", "id": "dishwasher_wet" }], "sequence": [
+          { "action": "notify.mobile_app_resident_one", "data": { "title": "💧 WATER LEAK — Dishwasher", "message": "Water detected under the dishwasher. Check immediately!", "data": { "push": { "sound": "default" }, "tag": "leak_dishwasher" } } },
+          { "action": "notify.mobile_app_resident_two", "data": { "title": "💧 WATER LEAK — Dishwasher", "message": "Water detected under the dishwasher. Check immediately!", "data": { "push": { "sound": "default" }, "tag": "leak_dishwasher" } } }
+        ]},
+        { "conditions": [{ "condition": "trigger", "id": "furnace_wet" }], "sequence": [
+          { "action": "notify.mobile_app_resident_one", "data": { "title": "💧 WATER LEAK — Furnace Room", "message": "Water detected in the furnace room. Check immediately!", "data": { "push": { "sound": "default" }, "tag": "leak_furnace" } } },
+          { "action": "notify.mobile_app_resident_two", "data": { "title": "💧 WATER LEAK — Furnace Room", "message": "Water detected in the furnace room. Check immediately!", "data": { "push": { "sound": "default" }, "tag": "leak_furnace" } } }
+        ]},
+        { "conditions": [{ "condition": "trigger", "id": "dishwasher_dry" }], "sequence": [
+          { "action": "notify.mobile_app_resident_one", "data": { "title": "✅ Dishwasher leak sensor clear", "message": "No water detected under the dishwasher.", "data": { "tag": "leak_dishwasher" } } },
+          { "action": "notify.mobile_app_resident_two", "data": { "title": "✅ Dishwasher leak sensor clear", "message": "No water detected under the dishwasher.", "data": { "tag": "leak_dishwasher" } } }
+        ]},
+        { "conditions": [{ "condition": "trigger", "id": "furnace_dry" }], "sequence": [
+          { "action": "notify.mobile_app_resident_one", "data": { "title": "✅ Furnace room leak sensor clear", "message": "No water detected in the furnace room.", "data": { "tag": "leak_furnace" } } },
+          { "action": "notify.mobile_app_resident_two", "data": { "title": "✅ Furnace room leak sensor clear", "message": "No water detected in the furnace room.", "data": { "tag": "leak_furnace" } } }
+        ]}
+      ]
+    }
+  ],
+  "mode": "parallel",
+  "max_exceeded": "silent"
+}

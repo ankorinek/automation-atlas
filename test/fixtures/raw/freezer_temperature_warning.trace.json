@@ -1,0 +1,29 @@
+{
+  "_comment": "Real detailed trace pulled live via HA MCP for automation.freezer_temperature_warning, run_id dad3fe0aa1f817b82c17f684fbbc1c97 (2026-07-05T18:39:01Z). None of the choose branches were taken (freezer was already back to normal, alert_active already off) — no /sequence/ entries appear. This is the authoritative Phase 2 acceptance-criterion fixture: 'the freezer-alert automation's last real trace renders correctly overlaid.'",
+  "automation_id": "automation.freezer_temperature_warning",
+  "run_id": "dad3fe0aa1f817b82c17f684fbbc1c97",
+  "trigger": {
+    "platform": "numeric_state",
+    "description": "numeric state of sensor.upstairs_freezer_temperature",
+    "to_state": "-16.6",
+    "from_state": "-14.6",
+    "entity_id": "sensor.upstairs_freezer_temperature"
+  },
+  "action_trace": [
+    { "path": "action/0", "timestamp": "2026-07-05T18:39:01.179960+00:00" },
+    { "path": "action/0/choose/0", "timestamp": "2026-07-05T18:39:01.180156+00:00", "result": { "result": false } },
+    { "path": "action/0/choose/0/conditions/0", "timestamp": "2026-07-05T18:39:01.180253+00:00", "result": { "result": false } },
+    { "path": "action/0/choose/1", "timestamp": "2026-07-05T18:39:01.180408+00:00", "result": { "result": false } },
+    { "path": "action/0/choose/1/conditions/0", "timestamp": "2026-07-05T18:39:01.180479+00:00", "result": { "result": false } },
+    { "path": "action/0/choose/2", "timestamp": "2026-07-05T18:39:01.180600+00:00", "result": { "result": false } },
+    { "path": "action/0/choose/2/conditions/0", "timestamp": "2026-07-05T18:39:01.180669+00:00", "result": { "result": true } },
+    { "path": "action/0/choose/2/conditions/1", "timestamp": "2026-07-05T18:39:01.180738+00:00", "result": { "result": true } },
+    { "path": "action/0/choose/2/conditions/1/entity_id/0", "timestamp": "2026-07-05T18:39:01.180790+00:00", "result": { "result": true, "state": -18.1 } },
+    { "path": "action/0/choose/2/conditions/2", "timestamp": "2026-07-05T18:39:01.180880+00:00", "result": { "result": true } },
+    { "path": "action/0/choose/2/conditions/2/entity_id/0", "timestamp": "2026-07-05T18:39:01.180932+00:00", "result": { "result": true, "state": -16.6 } },
+    { "path": "action/0/choose/2/conditions/3", "timestamp": "2026-07-05T18:39:01.181011+00:00", "result": { "result": false } },
+    { "path": "action/0/choose/2/conditions/3/entity_id/0", "timestamp": "2026-07-05T18:39:01.181061+00:00", "result": { "result": false, "state": "off", "wanted_state": "on" } }
+  ],
+  "config_summary": { "alias": "Freezer temperature warning", "mode": "restart" },
+  "script_execution": "finished"
+}

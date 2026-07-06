@@ -1,0 +1,22 @@
+{
+  "_comment": "SYNTHETIC — no real critical alert has fired on this instance yet, so this fixture is hand-constructed (matching the real trace's shape) to exercise the 'a branch actually executed' path of the trace overlay, which the real trace above never hits.",
+  "automation_id": "automation.freezer_temperature_warning",
+  "run_id": "synthetic-critical-run",
+  "trigger": {
+    "platform": "numeric_state",
+    "description": "numeric state of sensor.upstairs_freezer_temperature",
+    "to_state": "-4.2",
+    "from_state": "-14.0",
+    "entity_id": "sensor.upstairs_freezer_temperature"
+  },
+  "action_trace": [
+    { "path": "action/0", "timestamp": "2026-07-05T20:00:00.000000+00:00" },
+    { "path": "action/0/choose/0", "timestamp": "2026-07-05T20:00:00.001000+00:00", "result": { "result": true } },
+    { "path": "action/0/choose/0/conditions/0", "timestamp": "2026-07-05T20:00:00.001100+00:00", "result": { "result": true } },
+    { "path": "action/0/choose/0/sequence/0", "timestamp": "2026-07-05T20:00:00.002000+00:00" },
+    { "path": "action/0/choose/0/sequence/1", "timestamp": "2026-07-05T20:00:00.003000+00:00" },
+    { "path": "action/0/choose/0/sequence/2", "timestamp": "2026-07-05T20:00:00.004000+00:00" }
+  ],
+  "config_summary": { "alias": "Freezer temperature warning", "mode": "restart" },
+  "script_execution": "finished"
+}

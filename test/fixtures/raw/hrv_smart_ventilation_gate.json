@@ -1,0 +1,51 @@
+{
+  "id": "1782994647683",
+  "alias": "HRV smart ventilation gate",
+  "description": "HRV runs by default (fresh air exchange is its primary job). Priority order: (1) Back door open → HRV off (airing out manually). (2) CO2 > 1000 ppm → HRV on regardless of other conditions (fresh air is the only fix for high CO2). (3) Adverse conditions → HRV off: outdoor PM2.5 > 15, AC cooling AND outdoor dew point >= indoor, outdoor temp < -15C, heating AND indoor humidity < 25%, outdoor > 7C warmer than indoor. Default: HRV on. 60s debounce on continuous sensor triggers.",
+  "triggers": [
+    { "trigger": "time_pattern", "minutes": "/5", "id": "periodic" },
+    { "trigger": "state", "entity_id": "climate.main_floor", "attribute": "hvac_action", "id": "hvac" },
+    { "trigger": "state", "entity_id": "binary_sensor.myggbett_door_window_sensor_door_2", "id": "backdoor" },
+    { "trigger": "numeric_state", "entity_id": "sensor.alpstuga_air_quality_monitor_carbon_dioxide", "above": 1000, "id": "co2_high" },
+    { "trigger": "numeric_state", "entity_id": "sensor.alpstuga_air_quality_monitor_carbon_dioxide", "below": 800, "id": "co2_normal" }
+  ],
+  "conditions": [
+    { "condition": "state", "entity_id": "input_boolean.ventilation_manual_override", "state": "off" }
+  ],
+  "actions": [
+    {
+      "if": [{ "condition": "state", "entity_id": "binary_sensor.myggbett_door_window_sensor_door_2", "state": "on" }],
+      "then": [{ "action": "switch.turn_off", "target": { "entity_id": "switch.hrv" } }],
+      "else": [
+        {
+          "if": [{ "condition": "numeric_state", "entity_id": "sensor.alpstuga_air_quality_monitor_carbon_dioxide", "above": 1000 }],
+          "then": [{ "action": "switch.turn_on", "target": { "entity_id": "switch.hrv" } }],
+          "else": [
+            {
+              "if": [{
+                "condition": "or",
+                "conditions": [
+                  { "condition": "numeric_state", "entity_id": "sensor.o_1pst_pm2_5", "above": 15 },
+                  { "condition": "and", "conditions": [
+                    { "condition": "state", "entity_id": "climate.main_floor", "attribute": "hvac_action", "state": "cooling" },
+                    { "condition": "numeric_state", "entity_id": "sensor.dew_point_differential_outdoor_minus_indoor", "above": 0 }
+                  ]},
+                  { "condition": "numeric_state", "entity_id": "sensor.o_1pst_temperature", "below": -15 },
+                  { "condition": "and", "conditions": [
+                    { "condition": "state", "entity_id": "climate.main_floor", "attribute": "hvac_action", "state": "heating" },
+                    { "condition": "numeric_state", "entity_id": "sensor.main_floor_current_humidity", "below": 25 }
+                  ]},
+                  { "condition": "numeric_state", "entity_id": "sensor.temp_differential_indoor_minus_outdoor", "below": -7 }
+                ]
+              }],
+              "then": [{ "action": "switch.turn_off", "target": { "entity_id": "switch.hrv" } }],
+              "else": [{ "action": "switch.turn_on", "target": { "entity_id": "switch.hrv" } }]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "mode": "restart",
+  "max_exceeded": "silent"
+}

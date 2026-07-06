@@ -1,0 +1,11 @@
+{
+  "id": "synthetic_blueprint_1",
+  "alias": "Motion light from blueprint",
+  "use_blueprint": {
+    "path": "homeassistant/motion_light.yaml",
+    "input": {
+      "motion_entity": "binary_sensor.hallway_motion",
+      "light_target": { "entity_id": "light.hallway" }
+    }
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "id": "synthetic_legacy_1",
+  "alias": "Legacy syntax smoke test",
+  "trigger": [
+    { "platform": "state", "entity_id": "binary_sensor.legacy_door", "to": "on" }
+  ],
+  "condition": [
+    { "condition": "state", "entity_id": "input_boolean.legacy_flag", "state": "off" }
+  ],
+  "action": [
+    { "service": "switch.turn_on", "entity_id": "switch.legacy_target", "data": {} }
+  ],
+  "mode": "single"
+}

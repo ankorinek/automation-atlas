@@ -1,0 +1,70 @@
+{
+  "id": "1782995975553",
+  "alias": "Furnace fan controller",
+  "description": "Season- and time-aware control of the Shelly furnace-fan bypass relay. Always resets Ecobee fan_mode to auto first. Priority order: (1) HEPA running forces circulation; (2) SUMMER: run fan while AC is actively cooling, and run a free-cooling mix when upstairs bedrooms are warm and basement is cool; (3) WINTER, daytime only, office occupied: warm the cold basement office by pulling warm air down. Back door open or manual override pauses everything.",
+  "triggers": [
+    { "entity_id": "switch.tretakt_smart_plug", "id": "hepa", "trigger": "state" },
+    { "id": "periodic", "minutes": "/5", "trigger": "time_pattern" },
+    { "entity_id": "binary_sensor.myggbett_door_window_sensor_door_2", "id": "backdoor", "trigger": "state" },
+    { "attribute": "hvac_action", "entity_id": "climate.main_floor", "id": "hvac_action", "trigger": "state" }
+  ],
+  "conditions": [
+    { "condition": "state", "entity_id": "input_boolean.ventilation_manual_override", "state": "off" },
+    { "condition": "state", "entity_id": "binary_sensor.myggbett_door_window_sensor_door_2", "state": "off" }
+  ],
+  "actions": [
+    { "action": "climate.set_fan_mode", "data": { "fan_mode": "auto" }, "target": { "entity_id": "climate.main_floor" } },
+    {
+      "choose": [
+        { "conditions": [{ "condition": "state", "entity_id": "switch.tretakt_smart_plug", "state": "on" }], "sequence": [{ "action": "switch.turn_on", "target": { "entity_id": "switch.shellyplus1_8813bf9f7cec" } }] },
+        { "conditions": [{ "attribute": "hvac_action", "condition": "state", "entity_id": "climate.main_floor", "state": "cooling" }], "sequence": [{ "action": "switch.turn_on", "target": { "entity_id": "switch.shellyplus1_8813bf9f7cec" } }] },
+        {
+          "conditions": [
+            { "condition": "or", "conditions": [{ "condition": "state", "entity_id": "climate.main_floor", "state": ["cool", "heat_cool"] }, { "above": 20, "condition": "numeric_state", "entity_id": "sensor.burlington_ontario_canada_temperature" }] },
+            { "condition": "not", "conditions": [{ "attribute": "hvac_action", "condition": "state", "entity_id": "climate.main_floor", "state": "heating" }] },
+            { "above": 23.5, "condition": "numeric_state", "entity_id": "sensor.upstairs_bedrooms_max_temperature" },
+            { "below": 21, "condition": "numeric_state", "entity_id": "sensor.basement_office_timmerflotte_temp_hmd_sensor_temperature" }
+          ],
+          "sequence": [{ "action": "switch.turn_on", "target": { "entity_id": "switch.shellyplus1_8813bf9f7cec" } }]
+        },
+        {
+          "conditions": [
+            { "condition": "or", "conditions": [{ "condition": "state", "entity_id": "climate.main_floor", "state": ["cool", "heat_cool"] }, { "above": 20, "condition": "numeric_state", "entity_id": "sensor.burlington_ontario_canada_temperature" }] },
+            { "condition": "not", "conditions": [{ "attribute": "hvac_action", "condition": "state", "entity_id": "climate.main_floor", "state": "heating" }] },
+            { "condition": "state", "entity_id": "switch.shellyplus1_8813bf9f7cec", "state": "on" },
+            { "above": 22.5, "condition": "numeric_state", "entity_id": "sensor.upstairs_bedrooms_max_temperature" },
+            { "below": 22, "condition": "numeric_state", "entity_id": "sensor.basement_office_timmerflotte_temp_hmd_sensor_temperature" }
+          ],
+          "sequence": [{ "action": "switch.turn_on", "target": { "entity_id": "switch.shellyplus1_8813bf9f7cec" } }]
+        },
+        {
+          "conditions": [
+            { "condition": "or", "conditions": [{ "condition": "state", "entity_id": "climate.main_floor", "state": "heat" }, { "below": 14, "condition": "numeric_state", "entity_id": "sensor.burlington_ontario_canada_temperature" }] },
+            { "after": "07:00:00", "before": "17:00:00", "condition": "time" },
+            { "condition": "not", "conditions": [{ "attribute": "hvac_action", "condition": "state", "entity_id": "climate.main_floor", "state": "cooling" }] },
+            { "below": 19, "condition": "numeric_state", "entity_id": "sensor.basement_office_timmerflotte_temp_hmd_sensor_temperature" },
+            { "above": 3, "condition": "numeric_state", "entity_id": "sensor.temp_differential_main_floor_minus_basement_office" }
+          ],
+          "sequence": [{ "action": "switch.turn_on", "target": { "entity_id": "switch.shellyplus1_8813bf9f7cec" } }]
+        },
+        {
+          "conditions": [
+            { "condition": "or", "conditions": [{ "condition": "state", "entity_id": "climate.main_floor", "state": "heat" }, { "below": 14, "condition": "numeric_state", "entity_id": "sensor.burlington_ontario_canada_temperature" }] },
+            { "after": "07:00:00", "before": "19:00:00", "condition": "time" },
+            { "condition": "not", "conditions": [{ "attribute": "hvac_action", "condition": "state", "entity_id": "climate.main_floor", "state": "cooling" }] },
+            { "below": 19, "condition": "numeric_state", "entity_id": "sensor.basement_office_timmerflotte_temp_hmd_sensor_temperature" },
+            { "condition": "state", "entity_id": "switch.shellyplus1_8813bf9f7cec", "state": "on" },
+            { "above": 1.5, "condition": "numeric_state", "entity_id": "sensor.temp_differential_main_floor_minus_basement_office" }
+          ],
+          "sequence": [{ "action": "switch.turn_on", "target": { "entity_id": "switch.shellyplus1_8813bf9f7cec" } }]
+        }
+      ],
+      "default": [
+        { "action": "switch.turn_off", "target": { "entity_id": "switch.shellyplus1_8813bf9f7cec" } },
+        { "action": "climate.set_fan_mode", "data": { "fan_mode": "auto" }, "target": { "entity_id": "climate.main_floor" } }
+      ]
+    }
+  ],
+  "max_exceeded": "silent",
+  "mode": "restart"
+}

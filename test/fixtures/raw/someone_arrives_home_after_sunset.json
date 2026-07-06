@@ -1,0 +1,17 @@
+{
+  "id": "1751832150077",
+  "alias": "someone arrives home after sunset",
+  "description": "",
+  "triggers": [
+    { "trigger": "state", "entity_id": ["person.resident_one", "person.resident_two"], "to": "home" }
+  ],
+  "conditions": [
+    { "condition": "state", "entity_id": "sun.sun", "state": "below_horizon" }
+  ],
+  "actions": [
+    { "action": "light.turn_on", "metadata": {}, "data": {}, "target": { "device_id": ["78d0ad9f19d614228cb7385208e07a02", "f9d9bd0742bae99966f27502adf51169", "f21e318e15bfdec3f379a97f3024f2ad"] } },
+    { "delay": { "hours": 0, "minutes": 5, "seconds": 0, "milliseconds": 0 } },
+    { "action": "light.turn_off", "metadata": {}, "data": {}, "target": { "device_id": ["78d0ad9f19d614228cb7385208e07a02", "f9d9bd0742bae99966f27502adf51169", "f21e318e15bfdec3f379a97f3024f2ad"] } }
+  ],
+  "mode": "single"
+}
